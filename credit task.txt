@@ -1,0 +1,113 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Dependency installation...'
+                echo 'Building application...'
+                git branch: 'main', url: 'https://github.com/Samarth4832/credit-task-.git'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                
+                script {
+                    def powershellCommand = """
+                        \$SMTPServer = "smtp.gmail.com"
+                        \$SMTPFrom = "samarth4832.be22@chitkara.edu.in"
+                        \$SMTPTo = "samarth4832.be22@chitkara.edu.	in"
+                        \$SMTPSubject = "Test success."
+                        \$SMTPBody = "Test successful."
+                        \$SMTPUsername = "samarth4832.be22@chitkara.edu.in"
+                        \$SMTPPassword = "wlpx xdcg lgsv ixew"
+    
+                        Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                    """
+                    powershell(powershellCommand)
+                }
+            }
+        }
+        stage('Code Analysis') {
+            steps {
+                echo 'Code analysis...'
+            }
+        }
+        stage('Security') {
+            steps {
+                echo 'Security scans...'
+                
+                script {
+                    def powershellCommand = """
+                        \$SMTPServer = "smtp.gmail.com"
+                        \$SMTPFrom = "samarth4832.be22@chitkara.edu.in"
+                        \$SMTPTo = "samarth4832.be22@chitkara.edu.in"
+                        \$SMTPSubject = "Security checks passed."
+                        \$SMTPBody = "Pipeline cleared security checks."
+                        \$SMTPUsername = "samarth4832.be22@chitkara.edu.in"
+                        \$SMTPPassword = "wlpx xdcg lgsv ixew"
+    
+                        Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                    """
+                    powershell(powershellCommand)
+                }
+            }
+        }
+        
+        stage('Deploy Staging') {
+            steps {
+                echo 'Staging deployment...'
+            }
+        }
+        
+        stage('Integration Test') {
+            steps {
+                echo 'Integration testing...'
+            }
+        }
+        
+        stage('Deploy Production') {
+            steps {
+                echo 'Production deployment...'
+            }
+        }
+    }
+    
+    post {
+        success {
+            script {
+                def powershellCommand = """
+                    \$SMTPServer = "smtp.gmail.com"
+                    \$SMTPFrom = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPTo = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPSubject = "Success."
+                    \$SMTPBody = "Pipeline executed successfully."
+                    \$SMTPUsername = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPPassword = "wlpx xdcg lgsv ixew"
+    
+                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                """
+                powershell(powershellCommand)
+            }
+            echo 'Success!'
+        }
+        failure {
+            script {
+                def powershellCommand = """
+                    \$SMTPServer = "smtp.gmail.com"
+                    \$SMTPFrom = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPTo = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPSubject = "Failure"
+                    \$SMTPBody = "Pipeline failed to execute."
+                    \$SMTPUsername = "samarth4832.be22@chitkara.edu.in"
+                    \$SMTPPassword = "wlpx xdcg lgsv ixew"
+    
+                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                """
+                powershell(powershellCommand)
+            }
+            echo 'Failure! Check for errors.'
+        }
+    }
+}
